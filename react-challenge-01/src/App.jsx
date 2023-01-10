@@ -11,14 +11,22 @@ function App() {
     }
 
     setList((prev) => [...prev, newDot])
-    console.log(list)
+
   }
+
+  const RemoveLastDot = (e) => {
+    e.stopPropagation()
+
+    setList((prev) => [...prev].slice(0, -1))
+  }
+
 
   return (
     <div id="page" onClick={handleClick}>
+      <button onClick={RemoveLastDot}>Remover</button>
       {list.map((item) => {
         return (
-          <span key={item.clientX} className="dot" style={{ left: item.clientX, top: item.clientY }}>
+          <span key="" className="dot" style={{ left: item.clientX, top: item.clientY }}>
           </span>
         )
       })}
