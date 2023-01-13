@@ -35,21 +35,36 @@ Ao enviar, deve-se apresentar um alert javascript com sucesso, limpar todos os c
 do formulário e zerar a barra de progresso novamente.
 */
 
+import { useState } from "react";
+import "./styles.css"
+
 function App() {
+  const [fullName, setFullName] = useState("")
+  const [email, setEmail] = useState("")
+
   return (
     <div className='App'>
-      <h3>desafio fernandev</h3>
-      <h1>progresso do formulário</h1>
+      <h1>Progresso do formulário</h1>
 
       <main>
         {/* crie a barra de progresso aqui */}
         <div className='form-group'>
           <label htmlFor=''>Nome Completo</label>
-          <input />
+          <input
+            type="text"
+            value={fullName}
+            onChange={({ target }) => setFullName(target.value)}
+            required
+          />
         </div>
         <div className='form-group'>
           <label htmlFor=''>E-mail</label>
-          <input />
+          <input
+            type="email"
+            value={email}
+            onChange={({ target }) => setEmail(target.value)}
+            required
+          />
         </div>
         <div className='form-group'>
           <label htmlFor=''>Estado Civil</label>

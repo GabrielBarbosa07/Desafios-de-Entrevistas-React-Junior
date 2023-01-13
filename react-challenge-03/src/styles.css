@@ -51,6 +51,10 @@ main {
 form {
   background: white;
 }
+input{
+  background-color: #fff;
+  font-weight: bold;
+}
 button {
   border: 0;
   border-radius: 10px;
@@ -84,18 +88,22 @@ select {
   padding-left: 10px;
   font-family: Verdana;
   font-size: 14px;
+  font-weight: bold;
   color: #333;
+  background-color: #fff;
 }
 button {
   height: 40px;
   width: 100%;
   font-size: 16px;
-  color: #333;
+  color: #fff;
+  font-weight: bold;
 }
 
 button:hover {
   background: #ddd;
   cursor: pointer;
+  color: #000;
 }
 button:active {
   background: #333;
