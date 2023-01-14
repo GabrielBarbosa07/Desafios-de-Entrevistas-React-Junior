@@ -39,8 +39,28 @@ import { useState } from "react";
 import "./styles.css"
 
 function App() {
-  const [fullName, setFullName] = useState("")
-  const [email, setEmail] = useState("")
+  const [data, setData] = useState({
+    fullName: "",
+    email: "",
+    maritalStatus: "",
+    genre: ""
+  })
+
+  const nameValid = (state) => {
+    if (state.split(" ").length < 2) {
+      return false
+    }
+    return true
+  }
+
+  const handleChange = (e) => {
+
+    const { name, value } = e.target
+
+    setData((prev) => {
+      const newData = { ...prev, }
+    })
+  }
 
   return (
     <div className='App'>
@@ -52,8 +72,9 @@ function App() {
           <label htmlFor=''>Nome Completo</label>
           <input
             type="text"
-            value={fullName}
-            onChange={({ target }) => setFullName(target.value)}
+            name="fullName"
+            value={data.fullName}
+            onChange={handleChange}
             required
           />
         </div>
@@ -61,14 +82,15 @@ function App() {
           <label htmlFor=''>E-mail</label>
           <input
             type="email"
-            value={email}
-            onChange={({ target }) => setEmail(target.value)}
+            name="email"
+            value={data.email}
+            onChange={handleChange}
             required
           />
         </div>
         <div className='form-group'>
           <label htmlFor=''>Estado Civil</label>
-          <select>
+          <select name="maritalStatus" value={data.maritalStatus} onChange={handleChange}>
             <option value=''>- selecione...</option>
             <option value='solteiro'>Solteiro</option>
             <option value='casado'>Casado</option>
@@ -79,10 +101,10 @@ function App() {
           <label htmlFor=''>Gênero</label>
           <div className='radios-container'>
             <span>
-              <input type='radio' /> Masculino
+              <input type='radio' name="genre" value="masculino" onChange={handleChange} checked={data.genre === "masculino"} /> Masculino
             </span>
             <span>
-              <input type='radio' /> Feminino
+              <input type='radio' name="genre" value="feminino" onChange={handleChange} checked={data.genre === "feminino"} /> Feminino
             </span>
           </div>
         </div>
