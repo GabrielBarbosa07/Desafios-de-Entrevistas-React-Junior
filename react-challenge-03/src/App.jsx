@@ -35,83 +35,100 @@ Ao enviar, deve-se apresentar um alert javascript com sucesso, limpar todos os c
 do formulário e zerar a barra de progresso novamente.
 */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles.css"
 
-function App() {
-  const [data, setData] = useState({
-    fullName: "",
-    email: "",
-    maritalStatus: "",
-    genre: ""
+import { set, useForm } from "react-hook-form"
+import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod"
+import LinearDeterminate from "./Linear";
+
+const schema = z.object({
+  fullName: z.string("O Nome é obrigatório").min(1, "O Nome é deve ter pelo menos um caracter."),
+  email: z.string().nonempty("O email é obrigatório").email("Formato de email inválido!"),
+  maritalStatus: z.string("O Estado Civil é obrigatório"),
+  genre: z.enum(['Masculino', 'Feminino'], 'Por favor, selecione o seu gênero.')
+})
+
+export default function App() {
+  const [progresso, setProgresso] = useState(50)
+
+  const { handleSubmit, register, formState: { errors } } = useForm({
+    mode: "all",
+    criteriaMode: "all",
+    resolver: zodResolver(schema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      maritalStatus: "solteiro",
+      genre: "Masculino",
+    },
+
   })
+  const onSubmit = data => {
 
-  const nameValid = (state) => {
-    if (state.split(" ").length < 2) {
-      return false
+    console.log(data.fullName)
+  }
+  useEffect(() => {
+    const objKeys = Object.keys(errors)
+    console.log(objKeys)
+    if (objKeys) {
+      setProgresso(prev => prev = 100 - (25 * objKeys.length))
     }
-    return true
-  }
+    
+    
+  }, [errors])
 
-  const handleChange = (e) => {
-
-    const { name, value } = e.target
-
-    setData((prev) => {
-      const newData = { ...prev, }
-    })
-  }
 
   return (
-    <div className='App'>
+    <div className='App' >
+
       <h1>Progresso do formulário</h1>
 
       <main>
         {/* crie a barra de progresso aqui */}
-        <div className='form-group'>
-          <label htmlFor=''>Nome Completo</label>
-          <input
-            type="text"
-            name="fullName"
-            value={data.fullName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className='form-group'>
-          <label htmlFor=''>E-mail</label>
-          <input
-            type="email"
-            name="email"
-            value={data.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className='form-group'>
-          <label htmlFor=''>Estado Civil</label>
-          <select name="maritalStatus" value={data.maritalStatus} onChange={handleChange}>
-            <option value=''>- selecione...</option>
-            <option value='solteiro'>Solteiro</option>
-            <option value='casado'>Casado</option>
-            <option value='divorciado'>Divorciado</option>
-          </select>
-        </div>
-        <div className='form-group'>
-          <label htmlFor=''>Gênero</label>
-          <div className='radios-container'>
-            <span>
-              <input type='radio' name="genre" value="masculino" onChange={handleChange} checked={data.genre === "masculino"} /> Masculino
-            </span>
-            <span>
-              <input type='radio' name="genre" value="feminino" onChange={handleChange} checked={data.genre === "feminino"} /> Feminino
-            </span>
+        <LinearDeterminate progresso={progresso} />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='form-group'>
+            <label htmlFor=''>Nome Completo</label>
+            <input
+              type="text"
+              name="fullName"
+              {...register("fullName")}
+            />
+            {errors.fullName && <span className='error'>{errors.fullName.message}</span>}
           </div>
-        </div>
-        <button>Enviar Formulário</button>
+          <div className='form-group'>
+            <label htmlFor=''>E-mail</label>
+            <input type="text" {...register("email")} />
+            {errors.email && <span className='error'>{errors.email.message}</span>}
+          </div>
+          <div className='form-group'>
+            <label htmlFor=''>Estado Civil</label>
+            <select  {...register('maritalStatus')} >
+              <option value='selecione' disabled>- selecione...</option>
+              <option value='solteiro'>Solteiro</option>
+              <option value='casado'>Casado</option>
+              <option value='divorciado'>Divorciado</option>
+            </select>
+            {errors.maritalStatus && <span className='error'>{errors.maritalStatus.message}</span>}
+          </div>
+          <div className='form-group'>
+            <label htmlFor=''>Gênero</label>
+            <div className='radios-container' >
+              <span>
+                <input type='radio' name="genre" value="Masculino" {...register("genre")} /> Masculino
+              </span>
+              <span>
+                <input type='radio' name="genre" value="Feminino"  {...register("genre")} /> Feminino
+              </span>
+            </div>
+            {errors.genre && <span className='error'>{errors.genre.message}</span>}
+          </div>
+          <button type="submit">Enviar Formulário</button>
+        </form>
+
       </main>
-    </div>
+    </div >
   );
 }
-
-export default App;
